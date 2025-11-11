@@ -146,7 +146,7 @@ const Scene: React.FC<SceneProps> = (props) => {
   const { activeView, selectedContact, selectedMeeting } = props;
 
   const animatedDetailProps = useSpring({
-    position: ((selectedContact || selectedMeeting) ? [1.8, 1.6, 0.3] : [4, 1.6, 0]) as [number, number, number],
+    position: ((selectedContact || selectedMeeting) ? [2.3, 1.6, 0.3] : [4, 1.6, 0]) as [number, number, number],
     scale: (selectedContact || selectedMeeting) ? 1 : 0.8,
     config: { mass: 1, tension: 220, friction: 25 }
   });
@@ -162,7 +162,7 @@ const Scene: React.FC<SceneProps> = (props) => {
       <OrbitControls makeDefault />
       
       {/* Nav Panel */}
-      <group position={[-1.1, 1.6, 0.3]} rotation={[0, 0.4, 0]}>
+      <group position={[-1.4, 1.6, 0.3]} rotation={[0, 0.4, 0]}>
          <mesh>
             <planeGeometry args={[0.5, PANEL_HEIGHT]} />
             <meshStandardMaterial transparent opacity={0} />
