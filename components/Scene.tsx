@@ -38,7 +38,14 @@ interface SceneProps {
   handleDeleteMeeting: (id: string) => void;
 }
 
-const NavButton = ({ onClick, isActive, children, color, position, rotation }) => {
+const NavButton = ({ onClick, isActive, children, color, position, rotation }: {
+    onClick: () => void;
+    isActive: boolean;
+    children: React.ReactNode;
+    color: 'cyan' | 'purple';
+    position: [number, number, number];
+    rotation: [number, number, number];
+}) => {
     const [spring, api] = useSpring(() => ({
         scale: 1,
         config: { mass: 1, tension: 200, friction: 20 }
@@ -46,6 +53,13 @@ const NavButton = ({ onClick, isActive, children, color, position, rotation }) =
 
     const handlePointerOver = () => api.start({ scale: 1.15 });
     const handlePointerOut = () => api.start({ scale: 1 });
+    
+    const activeClasses = {
+      cyan: 'bg-cyan-500/30 border-cyan-400',
+      purple: 'bg-purple-500/30 border-purple-400',
+    };
+    const inactiveClasses = 'bg-gray-800/50 border-gray-700';
+    const currentClasses = isActive ? activeClasses[color] : inactiveClasses;
 
     return (
         <a.group position={position} rotation={rotation} scale={spring.scale}>
@@ -58,7 +72,7 @@ const NavButton = ({ onClick, isActive, children, color, position, rotation }) =
                 <meshStandardMaterial color={isActive ? color : '#27272a'} transparent opacity={0.5} />
             </mesh>
             <Html center position={[0, 0, 0.01]} transform>
-                <div className={`p-4 rounded-lg w-[120px] h-[160px] flex flex-col items-center justify-center pointer-events-none transition-all duration-300 border-2 ${isActive ? `bg-${color}-500/30 border-${color}-400` : 'bg-gray-800/50 border-gray-700'}`}>
+                <div className={`p-4 rounded-lg w-[120px] h-[160px] flex flex-col items-center justify-center pointer-events-none transition-all duration-300 border-2 ${currentClasses}`}>
                     {children}
                 </div>
             </Html>
@@ -74,15 +88,17 @@ const Scene: React.FC<SceneProps> = (props) => {
     const hasSelection = !!selectedContact || !!selectedMeeting;
     
     // Animate list panel to the left if a detail is showing
+    // FIX: Explicitly cast arrays as tuples to prevent TypeScript from widening them to number[].
+    // This ensures react-spring creates the correct SpringValue type for react-three-fiber.
     const listSpring = {
-        position: hasSelection ? [-1, 1.6, -2] : [ -0.7, 1.6, -1.8 ],
-        rotation: hasSelection ? [0, 0.4, 0] : [0, 0.2, 0],
+        position: (hasSelection ? [-1, 1.6, -2] : [ -0.7, 1.6, -1.8 ]) as [number, number, number],
+        rotation: (hasSelection ? [0, 0.4, 0] : [0, 0.2, 0]) as [number, number, number],
     };
     
     // Animate detail panel in from the right
     const detailSpring = {
-        position: hasSelection ? [0.9, 1.6, -1.9] : [2, 1.6, -2],
-        rotation: hasSelection ? [0, -0.25, 0] : [0, -0.5, 0],
+        position: (hasSelection ? [0.9, 1.6, -1.9] : [2, 1.6, -2]) as [number, number, number],
+        rotation: (hasSelection ? [0, -0.25, 0] : [0, -0.5, 0]) as [number, number, number],
         scale: hasSelection ? 1 : 0.8,
     };
     return { listSpring, detailSpring };
@@ -105,7 +121,7 @@ const Scene: React.FC<SceneProps> = (props) => {
         rotation={[0, 0.6, 0]}
       >
         <CalendarIcon className="h-12 w-12 mx-auto" />
-        <span className="mt-2 text-md">Meetings</span>
+        <span className="mt-2 text-lg">Meetings</span>
       </NavButton>
        <NavButton
         onClick={() => setActiveView(ViewType.CONTACTS)}
@@ -115,7 +131,7 @@ const Scene: React.FC<SceneProps> = (props) => {
         rotation={[0, 0.6, 0]}
       >
         <UserGroupIcon className="h-12 w-12 mx-auto" />
-        <span className="mt-2 text-md">Contacts</span>
+        <span className="mt-2 text-lg">Contacts</span>
       </NavButton>
 
       {/* List Panel */}
