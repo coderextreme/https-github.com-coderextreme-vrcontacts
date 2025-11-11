@@ -40,7 +40,8 @@ const MeetingDetail: React.FC<MeetingDetailProps> = ({ meeting, contacts, onEdit
   };
 
   return (
-    <div className="space-y-6 animate-fade-in h-full flex flex-col">
+    <div className="animate-fade-in h-full flex flex-col gap-4">
+      {/* Header section */}
       <div>
         <div className="flex justify-between items-start">
             <h1 className="text-4xl font-bold text-white tracking-wider">{meeting.title}</h1>
@@ -76,36 +77,43 @@ const MeetingDetail: React.FC<MeetingDetailProps> = ({ meeting, contacts, onEdit
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 flex-grow min-h-0">
-          <div className="space-y-4 bg-gray-900/50 p-4 rounded-lg border border-gray-700 overflow-y-auto">
-            <h2 className="text-xl font-semibold text-gray-300">Agenda</h2>
-            <p className="text-gray-400 whitespace-pre-wrap">{meeting.agenda}</p>
-
-            <h2 className="text-xl font-semibold text-gray-300 pt-4 flex justify-between items-center">
-              <span>Attendees</span>
-              <button 
-                  onClick={() => onManageAttendees(meeting)}
-                  className="flex items-center text-sm text-cyan-300 bg-cyan-500/10 hover:bg-cyan-500/20 px-3 py-1 rounded-md transition-colors"
-                  aria-label="Manage attendees"
-              >
-                  <UserPlusIcon className="h-5 w-5 mr-2" />
-                  Manage
-              </button>
-            </h2>
-            <div className="flex flex-wrap gap-4">
-            {contacts.map(contact => (
-                <div key={contact.id} className="flex items-center space-x-2">
-                    <img src={contact.avatarUrl} alt={contact.name} className="h-10 w-10 rounded-full" />
-                    <div>
-                        <p className="text-sm font-medium text-white">{contact.name}</p>
-                        <p className="text-xs text-gray-400">{contact.title}</p>
-                    </div>
-                </div>
-            ))}
-             {contacts.length === 0 && <p className="text-gray-500">No attendees assigned.</p>}
+          {/* Left Card: Agenda & Attendees */}
+          <div className="bg-gray-900/50 p-4 rounded-lg border border-gray-700 overflow-y-auto flex flex-col gap-4">
+            {/* Agenda Section */}
+            <div>
+              <h2 className="text-xl font-semibold text-gray-300">Agenda</h2>
+              <p className="text-gray-400 whitespace-pre-wrap mt-2">{meeting.agenda}</p>
+            </div>
+            {/* Attendees Section */}
+            <div>
+              <h2 className="text-xl font-semibold text-gray-300 flex justify-between items-center">
+                <span>Attendees</span>
+                <button 
+                    onClick={() => onManageAttendees(meeting)}
+                    className="flex items-center text-sm text-cyan-300 bg-cyan-500/10 hover:bg-cyan-500/20 px-3 py-1 rounded-md transition-colors"
+                    aria-label="Manage attendees"
+                >
+                    <UserPlusIcon className="h-5 w-5 mr-2" />
+                    Manage
+                </button>
+              </h2>
+              <div className="flex flex-wrap gap-4 mt-2">
+              {contacts.map(contact => (
+                  <div key={contact.id} className="flex items-center space-x-2">
+                      <img src={contact.avatarUrl} alt={contact.name} className="h-10 w-10 rounded-full" />
+                      <div>
+                          <p className="text-sm font-medium text-white">{contact.name}</p>
+                          <p className="text-xs text-gray-400">{contact.title}</p>
+                      </div>
+                  </div>
+              ))}
+              {contacts.length === 0 && <p className="text-gray-500">No attendees assigned.</p>}
+              </div>
             </div>
           </div>
           
-          <div className="space-y-4 bg-gray-900/50 p-4 rounded-lg border border-gray-700 flex flex-col">
+          {/* Right Card: AI Briefing */}
+          <div className="bg-gray-900/50 p-4 rounded-lg border border-gray-700 flex flex-col gap-4">
             <div className="flex justify-between items-center">
                 <h2 className="text-xl font-semibold text-cyan-300 flex items-center">
                     <SparklesIcon className="h-6 w-6 mr-2" />
@@ -114,7 +122,7 @@ const MeetingDetail: React.FC<MeetingDetailProps> = ({ meeting, contacts, onEdit
                 <button 
                     onClick={handleGenerateBriefing} 
                     disabled={isLoading}
-                    className="flex items-center bg-cyan-600 hover:bg-cyan-500 disabled:bg-cyan-800 disabled:cursor-not-allowed text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300"
+                    className="flex items-center bg-cyan-600 hover:bg-cyan-500 disabled:bg-cyan-800 disabled:cursor-not-allowed text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300 flex-shrink-0"
                 >
                     {isLoading ? <LoadingSpinner/> : <SparklesIcon className="h-5 w-5 mr-2" />}
                     {isLoading ? 'Generating...' : 'Generate'}
