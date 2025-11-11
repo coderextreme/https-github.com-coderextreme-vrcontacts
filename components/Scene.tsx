@@ -38,14 +38,20 @@ interface SceneProps {
   handleManageAttendees: (meeting: Meeting) => void;
 }
 
-const NavButton = ({ onClick, isActive, children, color, position, rotation }: {
-    onClick: () => void;
-    isActive: boolean;
-    children: React.ReactNode;
+type NavItemData = {
+    view: ViewType;
+    label: string;
+    icon: React.FC<React.SVGProps<SVGSVGElement>>;
     color: 'cyan' | 'purple';
-    position: [number, number, number];
-    rotation: [number, number, number];
+};
+
+const NavItem = ({ item, isActive, onClick, yPos }: {
+    item: NavItemData;
+    isActive: boolean;
+    onClick: (view: ViewType) => void;
+    yPos: number;
 }) => {
+    const { icon: Icon, label, color, view } = item;
     const [spring, api] = useSpring(() => ({
         scale: 1,
         config: { mass: 1, tension: 200, friction: 20 }
@@ -62,11 +68,11 @@ const NavButton = ({ onClick, isActive, children, color, position, rotation }: {
     const currentClasses = isActive ? activeClasses[color] : inactiveClasses;
 
     return (
-        <a.group position={position} rotation={rotation} scale={spring.scale}>
+        <a.group position={[0, yPos, 0]} scale={spring.scale}>
             <mesh
                 onPointerOver={handlePointerOver}
                 onPointerOut={handlePointerOut}
-                onPointerDown={(e) => { e.stopPropagation(); onClick(); }}
+                onPointerDown={(e) => { e.stopPropagation(); onClick(view); }}
             >
                 <planeGeometry args={[0.3, 0.4]} />
                 <meshStandardMaterial 
@@ -78,79 +84,95 @@ const NavButton = ({ onClick, isActive, children, color, position, rotation }: {
             </mesh>
             <Html center position={[0, 0, 0.01]} transform>
                 <div className={`p-4 rounded-lg w-[120px] h-[160px] flex flex-col items-center justify-center pointer-events-none transition-all duration-300 border-2 ${currentClasses}`}>
-                    {children}
+                    <Icon className="h-12 w-12 mx-auto" />
+                    <span className="mt-2 text-lg">{label}</span>
                 </div>
             </Html>
         </a.group>
     )
 }
 
+const NAV_LIST_Y_OFFSET = 2.4;
+const NAV_ITEM_SPACING = 4.0;
+
+const NavButtonList = ({ items, activeView, onSelectView }: {
+    items: NavItemData[];
+    activeView: ViewType;
+    onSelectView: (view: ViewType) => void;
+}) => {
+    const activeIndex = items.findIndex(item => item.view === activeView);
+    const indicatorY = (NAV_ITEM_SPACING / 2) - (activeIndex * NAV_ITEM_SPACING);
+
+    const indicatorSpring = useSpring({
+        y: indicatorY,
+        config: { mass: 1, tension: 220, friction: 25 },
+    });
+    
+    const indicatorColor = items[activeIndex]?.color === 'cyan' ? '#67e8f9' : '#c084fc';
+
+    return (
+        <group position={[-8.5, NAV_LIST_Y_OFFSET, 0]}>
+            {/* Background Panel */}
+            <RoundedBox args={[0.5, 4.6, 0.01]} radius={0.05} smoothness={4} position={[0, 0, -0.05]}>
+                <meshStandardMaterial color="#1f2937" transparent opacity={0.6} />
+            </RoundedBox>
+
+            {/* Sliding indicator */}
+            <a.group position-x={0} position-y={indicatorSpring.y} position-z={-0.04}>
+                <RoundedBox args={[0.35, 0.45, 0.02]} radius={0.05} smoothness={4}>
+                    <meshStandardMaterial 
+                        color={indicatorColor}
+                        emissive={indicatorColor}
+                        emissiveIntensity={1.5}
+                        transparent 
+                        opacity={0.6}
+                        toneMapped={false}
+                    />
+                </RoundedBox>
+            </a.group>
+
+            {/* Navigation Items */}
+            {items.map((item, index) => {
+                 const yPos = (NAV_ITEM_SPACING / 2) - (index * NAV_ITEM_SPACING);
+                 return (
+                    <NavItem 
+                        key={item.view}
+                        item={item}
+                        isActive={activeView === item.view}
+                        onClick={onSelectView}
+                        yPos={yPos}
+                    />
+                 )
+            })}
+        </group>
+    );
+};
+
 
 const Scene: React.FC<SceneProps> = (props) => {
-  const { activeView, setActiveView, selectedContact, selectedMeeting } = props;
+  const { activeView, selectedContact, selectedMeeting } = props;
 
   const animatedDetailProps = useSpring({
     position: ((selectedContact || selectedMeeting) ? [1.6, 1.6, 0] : [4, 1.6, 0]) as [number, number, number],
     scale: (selectedContact || selectedMeeting) ? 1 : 0.8,
     config: { mass: 1, tension: 220, friction: 25 }
   });
-  
-  // Shift the entire nav assembly up to prevent the grid from blocking clicks on the lower button.
-  const NAV_Y_OFFSET = 2.4;
-  const MEETINGS_BUTTON_Y = 2.0 + NAV_Y_OFFSET;
-  const CONTACTS_BUTTON_Y = -2.0 + NAV_Y_OFFSET;
 
-  const indicatorSpring = useSpring({
-    y: activeView === ViewType.MEETINGS ? MEETINGS_BUTTON_Y : CONTACTS_BUTTON_Y,
-    config: { mass: 1, tension: 220, friction: 25 },
-  });
-  
-  const indicatorColor = activeView === ViewType.MEETINGS ? '#67e8f9' : '#c084fc';
+  const navItems: NavItemData[] = [
+    { view: ViewType.MEETINGS, label: 'Meetings', icon: CalendarIcon, color: 'cyan' },
+    { view: ViewType.CONTACTS, label: 'Contacts', icon: UserGroupIcon, color: 'purple' }
+  ];
 
   return (
     <>
       <Environment />
       <OrbitControls makeDefault />
       
-      {/* Navigation Panels */}
-       <RoundedBox args={[0.5, 4.6, 0.01]} radius={0.05} smoothness={4} position={[-8.5, NAV_Y_OFFSET, -0.05]}>
-        <meshStandardMaterial color="#1f2937" transparent opacity={0.6} />
-      </RoundedBox>
-
-      {/* Sliding indicator for NavButtons */}
-      <a.group position-x={-8.5} position-y={indicatorSpring.y} position-z={-0.04}>
-        <RoundedBox args={[0.35, 0.45, 0.02]} radius={0.05} smoothness={4}>
-            <meshStandardMaterial 
-                color={indicatorColor}
-                emissive={indicatorColor}
-                emissiveIntensity={1.5}
-                transparent 
-                opacity={0.6}
-                toneMapped={false}
-            />
-        </RoundedBox>
-      </a.group>
-
-      <NavButton
-        onClick={() => setActiveView(ViewType.MEETINGS)}
-        isActive={activeView === ViewType.MEETINGS}
-        color="cyan"
-        position={[-8.5, MEETINGS_BUTTON_Y, 0]}
-        rotation={[0, 0, 0]}
-      >
-        <CalendarIcon className="h-12 w-12 mx-auto" />
-        <span className="mt-2 text-lg">Meetings</span>
-      </NavButton>
-       <NavButton
-        onClick={() => setActiveView(ViewType.CONTACTS)}
-        isActive={activeView === ViewType.CONTACTS}
-        color="purple"
-        position={[-8.5, CONTACTS_BUTTON_Y, 0]}
-        rotation={[0, 0, 0]}
-      >
-        <UserGroupIcon className="h-12 w-12 mx-auto" />
-        <span className="mt-2 text-lg">Contacts</span>
-      </NavButton>
+      <NavButtonList 
+        items={navItems}
+        activeView={activeView}
+        onSelectView={props.setActiveView}
+      />
 
       {/* List Panel */}
       <group position={[0, 1.6, 0]}>
