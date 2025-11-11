@@ -22,6 +22,19 @@ const App: React.FC = () => {
   const [editingContact, setEditingContact] = useState<Contact | null>(null);
   const [editingMeeting, setEditingMeeting] = useState<Meeting | null>(null);
 
+  // Selection Handlers - moved up to be used by save handlers
+  const handleSelectContact = (id: string) => {
+    setSelectedContactId(id);
+    setSelectedMeetingId(null);
+    setActiveView(ViewType.CONTACTS);
+  };
+
+  const handleSelectMeeting = (id: string) => {
+    setSelectedMeetingId(id);
+    setSelectedContactId(null);
+    setActiveView(ViewType.MEETINGS);
+  };
+
   // Contact Handlers
   const handleAddContact = () => {
     setEditingContact(null);
@@ -42,7 +55,9 @@ const App: React.FC = () => {
         id: crypto.randomUUID(),
         avatarUrl: `https://picsum.photos/seed/${crypto.randomUUID()}/200`,
       };
-      setContacts([...contacts, newContact]);
+      setContacts(prevContacts => [...prevContacts, newContact]);
+      // Select the new contact immediately after creation
+      handleSelectContact(newContact.id);
     }
     setIsContactModalOpen(false);
     setEditingContact(null);
@@ -81,7 +96,9 @@ const App: React.FC = () => {
             ...meeting,
             id: crypto.randomUUID(),
         };
-        setMeetings([...meetings, newMeeting]);
+        setMeetings(prevMeetings => [...prevMeetings, newMeeting]);
+        // Select the new meeting immediately after creation
+        handleSelectMeeting(newMeeting.id);
     }
     setIsMeetingModalOpen(false);
     setEditingMeeting(null);
@@ -94,20 +111,6 @@ const App: React.FC = () => {
             setSelectedMeetingId(null);
         }
     }
-  };
-
-
-  // Selection Handlers
-  const handleSelectContact = (id: string) => {
-    setSelectedContactId(id);
-    setSelectedMeetingId(null);
-    setActiveView(ViewType.CONTACTS);
-  };
-
-  const handleSelectMeeting = (id: string) => {
-    setSelectedMeetingId(id);
-    setSelectedContactId(null);
-    setActiveView(ViewType.MEETINGS);
   };
 
   const selectedContact = contacts.find(c => c.id === selectedContactId);
