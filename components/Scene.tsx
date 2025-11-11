@@ -128,7 +128,7 @@ const Scene: React.FC<SceneProps> = (props) => {
         onClick={() => setActiveView(ViewType.CONTACTS)}
         isActive={activeView === ViewType.CONTACTS}
         color="purple"
-        position={[-2.2, 1.3, -1.8]}
+        position={[-2.2, 1.2, -1.8]}
         rotation={[0, 0.6, 0]}
       >
         <UserGroupIcon className="h-12 w-12 mx-auto" />
