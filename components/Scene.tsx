@@ -66,7 +66,7 @@ const NavButton = ({ onClick, isActive, children, color, position, rotation }: {
             <mesh
                 onPointerOver={handlePointerOver}
                 onPointerOut={handlePointerOut}
-                onPointerDown={onClick}
+                onPointerDown={(e) => { e.stopPropagation(); onClick(); }}
             >
                 <planeGeometry args={[0.3, 0.4]} />
                 <meshStandardMaterial 
