@@ -3,7 +3,6 @@
 import React, { useMemo } from 'react';
 import { useSpring, a } from '@react-spring/three';
 import { Html } from '@react-three/drei';
-import * as THREE from 'three';
 
 import type { Contact, Meeting } from '../types';
 import { ViewType } from '../types';

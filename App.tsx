@@ -1,7 +1,8 @@
+
 import React, { useState } from 'react';
 import { Canvas } from '@react-three/fiber';
-// Fix: Replaced `Controllers` with `DefaultXRControllers` which is the correct export for newer versions of `@react-three/xr`. This resolves all three reported errors.
-import { XR, DefaultXRControllers, VRButton } from '@react-three/xr';
+// Fix: The `vr` prop on Canvas is deprecated. Re-enabling WebXR support by using the `<XR>` and `<Controllers>` components from `@react-three/xr`.
+import { VRButton, XR, Controllers } from '@react-three/xr';
 import { CONTACTS, MEETINGS } from './constants';
 import type { Contact, Meeting } from './types';
 import { ViewType } from './types';
@@ -119,10 +120,11 @@ const App: React.FC = () => {
   return (
     <>
       <VRButton />
+      {/* Fix: The `vr` prop on Canvas is deprecated. Using the `<XR>` component to enable WebXR. */}
       <Canvas camera={{ position: [0, 1.6, 0] }}>
+        {/* Fix: Added <XR> and <Controllers /> components to enable WebXR and interactions. */}
         <XR>
-          {/* Fix: Use the `DefaultXRControllers` component. */}
-          <DefaultXRControllers />
+          <Controllers />
           <Scene
             contacts={contacts}
             meetings={meetings}
