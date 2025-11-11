@@ -88,18 +88,12 @@ const Scene: React.FC<SceneProps> = (props) => {
   const { listSpring, detailSpring } = useMemo(() => {
     const hasSelection = !!selectedContact || !!selectedMeeting;
     
-    // Animate list panel to the left if a detail is showing
-    // FIX: Explicitly cast arrays as tuples to prevent TypeScript from widening them to number[].
-    // This ensures react-spring creates the correct SpringValue type for react-three-fiber.
     const listSpring = {
-        position: (hasSelection ? [-1, 1.6, -2] : [ -0.7, 1.6, -1.8 ]) as [number, number, number],
-        rotation: (hasSelection ? [0, 0.4, 0] : [0, 0.2, 0]) as [number, number, number],
+        position: (hasSelection ? [-1.1, 1.6, 0] : [0, 1.6, 0]) as [number, number, number],
     };
     
-    // Animate detail panel in from the right
     const detailSpring = {
-        position: (hasSelection ? [0.9, 1.6, -1.9] : [2, 1.6, -2]) as [number, number, number],
-        rotation: (hasSelection ? [0, -0.25, 0] : [0, -0.5, 0]) as [number, number, number],
+        position: (hasSelection ? [1.1, 1.6, 0] : [3, 1.6, 0]) as [number, number, number],
         scale: hasSelection ? 1 : 0.8,
     };
     return { listSpring, detailSpring };
@@ -119,8 +113,8 @@ const Scene: React.FC<SceneProps> = (props) => {
         onClick={() => setActiveView(ViewType.MEETINGS)}
         isActive={activeView === ViewType.MEETINGS}
         color="cyan"
-        position={[-2.2, 1.8, -1.5]}
-        rotation={[0, 0.6, 0]}
+        position={[-2.5, 1.8, 0]}
+        rotation={[0, 0, 0]}
       >
         <CalendarIcon className="h-12 w-12 mx-auto" />
         <span className="mt-2 text-lg">Meetings</span>
@@ -129,15 +123,15 @@ const Scene: React.FC<SceneProps> = (props) => {
         onClick={() => setActiveView(ViewType.CONTACTS)}
         isActive={activeView === ViewType.CONTACTS}
         color="purple"
-        position={[-2.2, 1.1, -1.5]}
-        rotation={[0, 0.6, 0]}
+        position={[-2.5, 1.1, 0]}
+        rotation={[0, 0, 0]}
       >
         <UserGroupIcon className="h-12 w-12 mx-auto" />
         <span className="mt-2 text-lg">Contacts</span>
       </NavButton>
 
       {/* List Panel */}
-      <a.group {...animatedListProps}>
+      <a.group {...animatedListProps} rotation={[0,0,0]}>
          <mesh>
             <planeGeometry args={[PANEL_WIDTH, PANEL_HEIGHT]} />
             <meshStandardMaterial transparent opacity={0} />
@@ -168,7 +162,7 @@ const Scene: React.FC<SceneProps> = (props) => {
       </a.group>
 
       {/* Detail Panel */}
-      <a.group {...animatedDetailProps}>
+      <a.group {...animatedDetailProps} rotation={[0,0,0]}>
         <mesh>
              <planeGeometry args={[PANEL_WIDTH * 1.5, PANEL_HEIGHT]} />
              <meshStandardMaterial transparent opacity={0} />
