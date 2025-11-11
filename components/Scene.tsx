@@ -35,6 +35,7 @@ interface SceneProps {
   handleDeleteContact: (id: string) => void;
   handleEditMeeting: (meeting: Meeting) => void;
   handleDeleteMeeting: (id: string) => void;
+  handleManageAttendees: (meeting: Meeting) => void;
 }
 
 const NavButton = ({ onClick, isActive, children, color, position, rotation }: {
@@ -180,7 +181,13 @@ const Scene: React.FC<SceneProps> = (props) => {
                     <ContactDetail contact={selectedContact} onEdit={props.handleEditContact} onDelete={props.handleDeleteContact} />
                 )}
                 {selectedMeeting && activeView === ViewType.MEETINGS && (
-                    <MeetingDetail meeting={selectedMeeting} contacts={props.meetingContacts} onEdit={props.handleEditMeeting} onDelete={props.handleDeleteMeeting} />
+                    <MeetingDetail 
+                        meeting={selectedMeeting} 
+                        contacts={props.meetingContacts} 
+                        onEdit={props.handleEditMeeting} 
+                        onDelete={props.handleDeleteMeeting}
+                        onManageAttendees={props.handleManageAttendees}
+                    />
                 )}
                 {!selectedContact && !selectedMeeting && (
                     <div className="flex items-center justify-center h-full">

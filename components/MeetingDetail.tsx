@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import type { Meeting, Contact, Briefing } from '../types';
 import { generateMeetingBriefing } from '../services/geminiService';
-import { ClockIcon, SparklesIcon, CalendarDaysIcon, PencilIcon, TrashIcon } from './IconComponents';
+import { ClockIcon, SparklesIcon, CalendarDaysIcon, PencilIcon, TrashIcon, UserPlusIcon } from './IconComponents';
 import LoadingSpinner from './LoadingSpinner';
 
 interface MeetingDetailProps {
@@ -9,9 +9,10 @@ interface MeetingDetailProps {
   contacts: Contact[];
   onEdit: (meeting: Meeting) => void;
   onDelete: (meetingId: string) => void;
+  onManageAttendees: (meeting: Meeting) => void;
 }
 
-const MeetingDetail: React.FC<MeetingDetailProps> = ({ meeting, contacts, onEdit, onDelete }) => {
+const MeetingDetail: React.FC<MeetingDetailProps> = ({ meeting, contacts, onEdit, onDelete, onManageAttendees }) => {
   const [briefing, setBriefing] = useState<Briefing | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -79,7 +80,17 @@ const MeetingDetail: React.FC<MeetingDetailProps> = ({ meeting, contacts, onEdit
             <h2 className="text-xl font-semibold text-gray-300">Agenda</h2>
             <p className="text-gray-400 whitespace-pre-wrap">{meeting.agenda}</p>
 
-            <h2 className="text-xl font-semibold text-gray-300 pt-4">Attendees</h2>
+            <h2 className="text-xl font-semibold text-gray-300 pt-4 flex justify-between items-center">
+              <span>Attendees</span>
+              <button 
+                  onClick={() => onManageAttendees(meeting)}
+                  className="flex items-center text-sm text-cyan-300 bg-cyan-500/10 hover:bg-cyan-500/20 px-3 py-1 rounded-md transition-colors"
+                  aria-label="Manage attendees"
+              >
+                  <UserPlusIcon className="h-5 w-5 mr-2" />
+                  Manage
+              </button>
+            </h2>
             <div className="flex flex-wrap gap-4">
             {contacts.map(contact => (
                 <div key={contact.id} className="flex items-center space-x-2">

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { CONTACTS, MEETINGS } from './constants';
@@ -8,6 +7,7 @@ import Scene from './components/Scene';
 import Modal from './components/Modal';
 import ContactForm from './components/ContactForm';
 import MeetingForm from './components/MeetingForm';
+import AttendeeManager from './components/AttendeeManager';
 
 const App: React.FC = () => {
   const [contacts, setContacts] = useState<Contact[]>(CONTACTS);
@@ -22,7 +22,18 @@ const App: React.FC = () => {
   const [editingContact, setEditingContact] = useState<Contact | null>(null);
   const [editingMeeting, setEditingMeeting] = useState<Meeting | null>(null);
 
-  // Selection Handlers - moved up to be used by save handlers
+  const [isAttendeeModalOpen, setIsAttendeeModalOpen] = useState(false);
+  const [meetingForAttendeeMgmt, setMeetingForAttendeeMgmt] = useState<Meeting | null>(null);
+
+  // View & Selection Handlers
+  const handleViewChange = (view: ViewType) => {
+    if (activeView !== view) {
+      setActiveView(view);
+      setSelectedContactId(null);
+      setSelectedMeetingId(null);
+    }
+  };
+
   const handleSelectContact = (id: string) => {
     setSelectedContactId(id);
     setSelectedMeetingId(null);
@@ -56,7 +67,6 @@ const App: React.FC = () => {
         avatarUrl: `https://picsum.photos/seed/${crypto.randomUUID()}/200`,
       };
       setContacts(prevContacts => [...prevContacts, newContact]);
-      // Select the new contact immediately after creation
       handleSelectContact(newContact.id);
     }
     setIsContactModalOpen(false);
@@ -75,7 +85,6 @@ const App: React.FC = () => {
         }
     }
   };
-
 
   // Meeting Handlers
   const handleAddMeeting = () => {
@@ -97,7 +106,6 @@ const App: React.FC = () => {
             id: crypto.randomUUID(),
         };
         setMeetings(prevMeetings => [...prevMeetings, newMeeting]);
-        // Select the new meeting immediately after creation
         handleSelectMeeting(newMeeting.id);
     }
     setIsMeetingModalOpen(false);
@@ -113,10 +121,31 @@ const App: React.FC = () => {
     }
   };
 
+  // Attendee Management Handlers
+  const handleManageAttendees = (meeting: Meeting) => {
+    setMeetingForAttendeeMgmt(meeting);
+    setIsAttendeeModalOpen(true);
+  };
+
+  const handleUpdateAttendees = (meetingId: string, attendeeIds: string[]) => {
+    setMeetings(prevMeetings =>
+      prevMeetings.map(m =>
+        m.id === meetingId ? { ...m, attendees: attendeeIds } : m
+      )
+    );
+    setIsAttendeeModalOpen(false);
+    setMeetingForAttendeeMgmt(null);
+  };
+
+  const handleCloseAttendeeModal = () => {
+    setIsAttendeeModalOpen(false);
+    setMeetingForAttendeeMgmt(null);
+  };
+
+
   const selectedContact = contacts.find(c => c.id === selectedContactId);
   const selectedMeeting = meetings.find(m => m.id === selectedMeetingId);
   const meetingContacts = selectedMeeting ? selectedMeeting.attendees.map(id => contacts.find(c => c.id === id)).filter(Boolean) as Contact[] : [];
-
 
   return (
     <>
@@ -125,7 +154,7 @@ const App: React.FC = () => {
             contacts={contacts}
             meetings={meetings}
             activeView={activeView}
-            setActiveView={setActiveView}
+            setActiveView={handleViewChange}
             selectedContactId={selectedContactId}
             selectedMeetingId={selectedMeetingId}
             handleSelectContact={handleSelectContact}
@@ -139,10 +168,11 @@ const App: React.FC = () => {
             handleDeleteContact={handleDeleteContact}
             handleEditMeeting={handleEditMeeting}
             handleDeleteMeeting={handleDeleteMeeting}
+            handleManageAttendees={handleManageAttendees}
           />
       </Canvas>
 
-      {/* Modals remain in the 2D DOM, overlaying the canvas */}
+      {/* CRUD Modals */}
       <Modal isOpen={isContactModalOpen} onClose={() => setIsContactModalOpen(false)} title={editingContact ? 'Edit Contact' : 'Add Contact'}>
         <ContactForm 
             onSave={handleSaveContact} 
@@ -159,6 +189,18 @@ const App: React.FC = () => {
             contacts={contacts}
         />
       </Modal>
+      
+      {/* Attendee Management Modal */}
+      {meetingForAttendeeMgmt && (
+        <Modal isOpen={isAttendeeModalOpen} onClose={handleCloseAttendeeModal} title={`Manage Attendees`}>
+            <AttendeeManager
+                meeting={meetingForAttendeeMgmt}
+                allContacts={contacts}
+                onSave={handleUpdateAttendees}
+                onCancel={handleCloseAttendeeModal}
+            />
+        </Modal>
+      )}
     </>
   );
 };
