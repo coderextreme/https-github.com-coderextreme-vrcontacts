@@ -69,7 +69,12 @@ const NavButton = ({ onClick, isActive, children, color, position, rotation }: {
                 onPointerDown={onClick}
             >
                 <planeGeometry args={[0.3, 0.4]} />
-                <meshStandardMaterial color={isActive ? color : '#27272a'} transparent opacity={isActive ? 0.2 : 0.5} />
+                <meshStandardMaterial 
+                    key={isActive ? color : 'inactive'}
+                    color={isActive ? color : '#27272a'} 
+                    transparent 
+                    opacity={isActive ? 0.2 : 0.5} 
+                />
             </mesh>
             <Html center position={[0, 0, 0.01]} transform>
                 <div className={`p-4 rounded-lg w-[120px] h-[160px] flex flex-col items-center justify-center pointer-events-none transition-all duration-300 border-2 ${currentClasses}`}>
