@@ -24,8 +24,8 @@ const ContactList: React.FC<ContactListProps> = ({ contacts, selectedContactId, 
             </button>
         </div>
         <div className="p-4 space-y-3 overflow-y-auto">
-            {contacts.map((contact, index) => (
-               <ListItemWrapper key={contact.id} index={index} onClick={() => onSelectContact(contact.id)}>
+            {contacts.map((contact) => (
+               <ListItemWrapper key={contact.id} onClick={() => onSelectContact(contact.id)}>
                     <div className={`w-full text-left p-3 rounded-lg transition-all duration-200 border-2 ${
                         selectedContactId === contact.id
                         ? 'bg-purple-500/30 border-purple-400 shadow-lg shadow-purple-500/20'

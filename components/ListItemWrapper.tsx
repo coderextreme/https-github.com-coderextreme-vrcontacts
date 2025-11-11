@@ -1,61 +1,45 @@
-// Fix: Add a triple-slash reference to include types for react-three-fiber JSX elements.
-/// <reference types="@react-three/fiber" />
 import React, { ReactNode } from 'react';
-import { useSpring, a } from '@react-spring/three';
-import { Html } from '@react-three/drei';
+// Changed from @react-spring/three to @react-spring/web to make this a DOM component
+import { useSpring, a } from '@react-spring/web';
 
 interface ListItemWrapperProps {
   children: ReactNode;
-  index: number;
   onClick: () => void;
 }
 
-const ListItemWrapper: React.FC<ListItemWrapperProps> = ({ children, index, onClick }) => {
+const ListItemWrapper: React.FC<ListItemWrapperProps> = ({ children, onClick }) => {
   const [spring, api] = useSpring(() => ({
     scale: 1,
-    glow: 0,
+    // Replicating the 3D glow effect with a CSS box-shadow for a similar visual cue
+    boxShadow: '0px 0px 0px 0px rgba(167, 139, 250, 0)',
     config: { mass: 1, tension: 300, friction: 25 },
   }));
 
-  const handlePointerOver = (e: any) => {
+  const handleMouseOver = (e: React.MouseEvent) => {
     e.stopPropagation();
-    api.start({ scale: 1.05, glow: 0.5 });
+    api.start({
+      scale: 1.03,
+      boxShadow: '0px 0px 25px 3px rgba(167, 139, 250, 0.4)',
+    });
   };
   
-  const handlePointerOut = () => {
-    api.start({ scale: 1, glow: 0 });
+  const handleMouseOut = () => {
+    api.start({
+      scale: 1,
+      boxShadow: '0px 0px 0px 0px rgba(167, 139, 250, 0)',
+    });
   };
 
+  // Using a.div which is an animatable DOM element, instead of a.group for 3D
   return (
-    <a.group
-      position-y={index * -0.2}
-      scale={spring.scale}
-      onPointerOver={handlePointerOver}
-      onPointerOut={handlePointerOut}
+    <a.div
+      style={spring}
+      onMouseOver={handleMouseOver}
+      onMouseOut={handleMouseOut}
       onClick={onClick}
     >
-      <mesh>
-        <planeGeometry args={[1, 0.18]} />
-        <meshStandardMaterial transparent opacity={0} />
-      </mesh>
-      
-      <a.mesh position-z={-0.01}>
-         <planeGeometry args={[1.02, 0.19]} />
-         <a.meshBasicMaterial 
-            color="#a78bfa"
-            transparent 
-            opacity={spring.glow}
-            toneMapped={false} 
-        />
-      </a.mesh>
-      
-      <Html
-        transform
-        className="w-[400px] h-[72px] pointer-events-none group"
-      >
-        {children}
-      </Html>
-    </a.group>
+      {children}
+    </a.div>
   );
 };
 

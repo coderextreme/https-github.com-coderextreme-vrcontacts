@@ -33,8 +33,8 @@ const MeetingList: React.FC<MeetingListProps> = ({ meetings, selectedMeetingId, 
             </button>
         </div>
         <div className="p-4 space-y-3 overflow-y-auto">
-        {meetings.map((meeting, index) => (
-            <ListItemWrapper key={meeting.id} index={index} onClick={() => onSelectMeeting(meeting.id)}>
+        {meetings.map((meeting) => (
+            <ListItemWrapper key={meeting.id} onClick={() => onSelectMeeting(meeting.id)}>
                 <div className={`w-full text-left p-3 rounded-lg transition-all duration-200 border-2 ${
                     selectedMeetingId === meeting.id
                     ? 'bg-cyan-500/30 border-cyan-400 shadow-lg shadow-cyan-500/20'
