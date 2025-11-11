@@ -2,7 +2,7 @@
 /// <reference types="@react-three/fiber" />
 import React, { useMemo } from 'react';
 import { useSpring, a } from '@react-spring/three';
-import { Html } from '@react-three/drei';
+import { Html, OrbitControls } from '@react-three/drei';
 
 import type { Contact, Meeting } from '../types';
 import { ViewType } from '../types';
@@ -110,6 +110,7 @@ const Scene: React.FC<SceneProps> = (props) => {
   return (
     <>
       <Environment />
+      <OrbitControls makeDefault />
       
       {/* Navigation Panels */}
       <NavButton

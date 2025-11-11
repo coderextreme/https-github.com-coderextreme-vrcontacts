@@ -1,5 +1,5 @@
 {
-  "name": "vr-contacts-&-meetings-hub",
+  "name": "3d-contacts-&-meetings-hub",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -15,7 +15,6 @@
     "three": "0.165.0",
     "@react-three/fiber": "8.16.8",
     "@react-three/drei": "9.107.0",
-    "@react-three/xr": "5.7.1",
     "@react-spring/three": "9.7.3",
     "zustand": "4.5.2",
     "@react-spring/web": "^10.0.3"
