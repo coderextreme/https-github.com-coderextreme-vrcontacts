@@ -66,7 +66,7 @@ const NavButton = ({ onClick, isActive, children, color, position, rotation }: {
             <mesh
                 onPointerOver={handlePointerOver}
                 onPointerOut={handlePointerOut}
-                onClick={onClick}
+                onPointerDown={onClick}
             >
                 <planeGeometry args={[0.3, 0.4]} />
                 <meshStandardMaterial color={isActive ? color : '#27272a'} transparent opacity={isActive ? 0.2 : 0.5} />
