@@ -1,6 +1,6 @@
 // Fix: Add a triple-slash reference to include types for react-three-fiber JSX elements.
 /// <reference types="@react-three/fiber" />
-import React, { useMemo } from 'react';
+import React from 'react';
 import { useSpring, a } from '@react-spring/three';
 import { Html, OrbitControls } from '@react-three/drei';
 
@@ -71,7 +71,6 @@ const NavButton = ({ onClick, isActive, children, color, position, rotation }: {
                 <planeGeometry args={[0.3, 0.4]} />
                 <meshStandardMaterial color={isActive ? color : '#27272a'} transparent opacity={0.5} />
             </mesh>
-            {/* Fix: Removed deprecated 'coplanar' prop from Html component. The 'transform' prop provides the necessary behavior. */}
             <Html center position={[0, 0, 0.01]} transform>
                 <div className={`p-4 rounded-lg w-[120px] h-[160px] flex flex-col items-center justify-center pointer-events-none transition-all duration-300 border-2 ${currentClasses}`}>
                     {children}
@@ -85,22 +84,14 @@ const NavButton = ({ onClick, isActive, children, color, position, rotation }: {
 const Scene: React.FC<SceneProps> = (props) => {
   const { activeView, setActiveView, selectedContact, selectedMeeting } = props;
 
-  const { listSpring, detailSpring } = useMemo(() => {
-    const hasSelection = !!selectedContact || !!selectedMeeting;
-    
-    const listSpring = {
-        position: (hasSelection ? [-1.1, 1.6, 0] : [0, 1.6, 0]) as [number, number, number],
-    };
-    
-    const detailSpring = {
-        position: (hasSelection ? [1.1, 1.6, 0] : [3, 1.6, 0]) as [number, number, number],
-        scale: hasSelection ? 1 : 0.8,
-    };
-    return { listSpring, detailSpring };
-  }, [selectedContact, selectedMeeting]);
-
-  const animatedListProps = useSpring(listSpring);
-  const animatedDetailProps = useSpring(detailSpring);
+  const animatedDetailProps = useSpring({
+    // FIX: The result of the ternary operator was being inferred as `number[]` instead of a tuple.
+    // By wrapping the ternary expression in parentheses and casting it to `[number, number, number]`,
+    // we ensure `useSpring` creates a `SpringValue` with the correct tuple type that `a.group` expects for its `position` prop.
+    position: ((selectedContact || selectedMeeting) ? [1.1, 1.6, 0] : [3, 1.6, 0]) as [number, number, number],
+    scale: (selectedContact || selectedMeeting) ? 1 : 0.8,
+    config: { mass: 1, tension: 220, friction: 25 }
+  });
   
 
   return (
@@ -113,7 +104,7 @@ const Scene: React.FC<SceneProps> = (props) => {
         onClick={() => setActiveView(ViewType.MEETINGS)}
         isActive={activeView === ViewType.MEETINGS}
         color="cyan"
-        position={[-2.5, 3, 1]}
+        position={[-1.8, 1.85, 0]}
         rotation={[0, 0, 0]}
       >
         <CalendarIcon className="h-12 w-12 mx-auto" />
@@ -123,7 +114,7 @@ const Scene: React.FC<SceneProps> = (props) => {
         onClick={() => setActiveView(ViewType.CONTACTS)}
         isActive={activeView === ViewType.CONTACTS}
         color="purple"
-        position={[-2.5, 0, 1]}
+        position={[-1.8, 1.35, 0]}
         rotation={[0, 0, 0]}
       >
         <UserGroupIcon className="h-12 w-12 mx-auto" />
@@ -131,11 +122,10 @@ const Scene: React.FC<SceneProps> = (props) => {
       </NavButton>
 
       {/* List Panel */}
-      <a.group {...animatedListProps} rotation={[0,0,0]}>
+      <group position={[-0.5, 1.6, 0]}>
          <mesh>
             <planeGeometry args={[PANEL_WIDTH, PANEL_HEIGHT]} />
             <meshStandardMaterial transparent opacity={0} />
-            {/* Fix: Removed deprecated 'coplanar' prop from Html component. The 'transform' prop provides the necessary behavior. */}
             <Html
               transform
               occlude
@@ -159,14 +149,13 @@ const Scene: React.FC<SceneProps> = (props) => {
               )}
             </Html>
         </mesh>
-      </a.group>
+      </group>
 
       {/* Detail Panel */}
-      <a.group {...animatedDetailProps} rotation={[0,0,0]}>
+      <a.group {...animatedDetailProps}>
         <mesh>
              <planeGeometry args={[PANEL_WIDTH * 1.5, PANEL_HEIGHT]} />
              <meshStandardMaterial transparent opacity={0} />
-              {/* Fix: Removed deprecated 'coplanar' prop from Html component. The 'transform' prop provides the necessary behavior. */}
               <Html
                 transform
                 occlude
