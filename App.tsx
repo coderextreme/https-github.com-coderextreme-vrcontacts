@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { VRCanvas, Controllers } from '@react-three/xr';
+import { Canvas } from '@react-three/fiber';
+// Fix: Replaced `Controllers` with `DefaultXRControllers` which is the correct export for newer versions of `@react-three/xr`. This resolves all three reported errors.
+import { XR, DefaultXRControllers, VRButton } from '@react-three/xr';
 import { CONTACTS, MEETINGS } from './constants';
 import type { Contact, Meeting } from './types';
 import { ViewType } from './types';
@@ -116,8 +118,11 @@ const App: React.FC = () => {
 
   return (
     <>
-      <VRCanvas camera={{ position: [0, 1.6, 0] }}>
-          <Controllers />
+      <VRButton />
+      <Canvas camera={{ position: [0, 1.6, 0] }}>
+        <XR>
+          {/* Fix: Use the `DefaultXRControllers` component. */}
+          <DefaultXRControllers />
           <Scene
             contacts={contacts}
             meetings={meetings}
@@ -137,7 +142,8 @@ const App: React.FC = () => {
             handleEditMeeting={handleEditMeeting}
             handleDeleteMeeting={handleDeleteMeeting}
           />
-      </VRCanvas>
+        </XR>
+      </Canvas>
 
       {/* Modals remain in the 2D DOM, overlaying the canvas */}
       <Modal isOpen={isContactModalOpen} onClose={() => setIsContactModalOpen(false)} title={editingContact ? 'Edit Contact' : 'Add Contact'}>
