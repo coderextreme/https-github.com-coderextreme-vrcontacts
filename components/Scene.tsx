@@ -48,10 +48,10 @@ type NavItemData = {
 const NavItem = ({ item, isActive, onClick, yPos }: {
     item: NavItemData;
     isActive: boolean;
-    onClick: (view: ViewType) => void;
+    onClick: () => void;
     yPos: number;
 }) => {
-    const { icon: Icon, label, color, view } = item;
+    const { icon: Icon, label, color } = item;
     const [spring, api] = useSpring(() => ({
         scale: 1,
         config: { mass: 1, tension: 200, friction: 20 }
@@ -72,7 +72,7 @@ const NavItem = ({ item, isActive, onClick, yPos }: {
             <mesh
                 onPointerOver={handlePointerOver}
                 onPointerOut={handlePointerOut}
-                onPointerDown={(e) => { e.stopPropagation(); onClick(view); }}
+                onPointerDown={(e) => { e.stopPropagation(); onClick(); }}
             >
                 <planeGeometry args={[0.3, 0.4]} />
                 <meshStandardMaterial 
@@ -139,7 +139,7 @@ const NavButtonList = ({ items, activeView, onSelectView }: {
                         key={item.view}
                         item={item}
                         isActive={activeView === item.view}
-                        onClick={onSelectView}
+                        onClick={() => onSelectView(item.view)}
                         yPos={yPos}
                     />
                  )
