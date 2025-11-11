@@ -85,10 +85,7 @@ const Scene: React.FC<SceneProps> = (props) => {
   const { activeView, setActiveView, selectedContact, selectedMeeting } = props;
 
   const animatedDetailProps = useSpring({
-    // FIX: The result of the ternary operator was being inferred as `number[]` instead of a tuple.
-    // By wrapping the ternary expression in parentheses and casting it to `[number, number, number]`,
-    // we ensure `useSpring` creates a `SpringValue` with the correct tuple type that `a.group` expects for its `position` prop.
-    position: ((selectedContact || selectedMeeting) ? [1.1, 1.6, 0] : [3, 1.6, 0]) as [number, number, number],
+    position: ((selectedContact || selectedMeeting) ? [1.6, 1.6, 0] : [4, 1.6, 0]) as [number, number, number],
     scale: (selectedContact || selectedMeeting) ? 1 : 0.8,
     config: { mass: 1, tension: 220, friction: 25 }
   });
@@ -104,7 +101,7 @@ const Scene: React.FC<SceneProps> = (props) => {
         onClick={() => setActiveView(ViewType.MEETINGS)}
         isActive={activeView === ViewType.MEETINGS}
         color="cyan"
-        position={[-1.35, 2.2, 0]}
+        position={[-0.85, 1.85, 0]}
         rotation={[0, 0, 0]}
       >
         <CalendarIcon className="h-12 w-12 mx-auto" />
@@ -114,7 +111,7 @@ const Scene: React.FC<SceneProps> = (props) => {
         onClick={() => setActiveView(ViewType.CONTACTS)}
         isActive={activeView === ViewType.CONTACTS}
         color="purple"
-        position={[-1.35, 1.7, 0]}
+        position={[-0.85, 1.35, 0]}
         rotation={[0, 0, 0]}
       >
         <UserGroupIcon className="h-12 w-12 mx-auto" />
@@ -122,7 +119,7 @@ const Scene: React.FC<SceneProps> = (props) => {
       </NavButton>
 
       {/* List Panel */}
-      <group position={[-0.5, 1.6, 0]}>
+      <group position={[0, 1.6, 0]}>
          <mesh>
             <planeGeometry args={[PANEL_WIDTH, PANEL_HEIGHT]} />
             <meshStandardMaterial transparent opacity={0} />
