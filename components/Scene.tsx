@@ -71,6 +71,7 @@ const NavButton = ({ onClick, isActive, children, color, position, rotation }: {
                 <planeGeometry args={[0.3, 0.4]} />
                 <meshStandardMaterial color={isActive ? color : '#27272a'} transparent opacity={0.5} />
             </mesh>
+            {/* Fix: Removed deprecated 'coplanar' prop from Html component. The 'transform' prop provides the necessary behavior. */}
             <Html center position={[0, 0, 0.01]} transform>
                 <div className={`p-4 rounded-lg w-[120px] h-[160px] flex flex-col items-center justify-center pointer-events-none transition-all duration-300 border-2 ${currentClasses}`}>
                     {children}
@@ -128,7 +129,7 @@ const Scene: React.FC<SceneProps> = (props) => {
         onClick={() => setActiveView(ViewType.CONTACTS)}
         isActive={activeView === ViewType.CONTACTS}
         color="purple"
-        position={[-2.2, 1.2, -1.5]}
+        position={[-2.2, 1.1, -1.5]}
         rotation={[0, 0.6, 0]}
       >
         <UserGroupIcon className="h-12 w-12 mx-auto" />
@@ -140,6 +141,7 @@ const Scene: React.FC<SceneProps> = (props) => {
          <mesh>
             <planeGeometry args={[PANEL_WIDTH, PANEL_HEIGHT]} />
             <meshStandardMaterial transparent opacity={0} />
+            {/* Fix: Removed deprecated 'coplanar' prop from Html component. The 'transform' prop provides the necessary behavior. */}
             <Html
               transform
               occlude
@@ -170,6 +172,7 @@ const Scene: React.FC<SceneProps> = (props) => {
         <mesh>
              <planeGeometry args={[PANEL_WIDTH * 1.5, PANEL_HEIGHT]} />
              <meshStandardMaterial transparent opacity={0} />
+              {/* Fix: Removed deprecated 'coplanar' prop from Html component. The 'transform' prop provides the necessary behavior. */}
               <Html
                 transform
                 occlude
