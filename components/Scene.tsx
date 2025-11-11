@@ -92,8 +92,8 @@ const NavItem = ({ item, isActive, onClick, yPos }: {
     )
 }
 
-const NAV_LIST_Y_OFFSET = 2.4;
-const NAV_ITEM_SPACING = 4.0;
+const NAV_LIST_Y_OFFSET = 1.6;
+const NAV_ITEM_SPACING = 0.5;
 
 const NavButtonList = ({ items, activeView, onSelectView }: {
     items: NavItemData[];
@@ -101,7 +101,10 @@ const NavButtonList = ({ items, activeView, onSelectView }: {
     onSelectView: (view: ViewType) => void;
 }) => {
     const activeIndex = items.findIndex(item => item.view === activeView);
-    const indicatorY = (NAV_ITEM_SPACING / 2) - (activeIndex * NAV_ITEM_SPACING);
+    
+    // This calculation centers the list of items around y=0 of the group
+    const yOffsetFromCenter = (items.length - 1) * NAV_ITEM_SPACING / 2;
+    const indicatorY = yOffsetFromCenter - (activeIndex * NAV_ITEM_SPACING);
 
     const indicatorSpring = useSpring({
         y: indicatorY,
@@ -109,11 +112,12 @@ const NavButtonList = ({ items, activeView, onSelectView }: {
     });
     
     const indicatorColor = items[activeIndex]?.color === 'cyan' ? '#67e8f9' : '#c084fc';
+    const panelHeight = (items.length * 0.4) + ((items.length - 1) * 0.1) + 0.2; // 0.4*2 + 0.1 gap + 0.2 padding
 
     return (
-        <group position={[-8.5, NAV_LIST_Y_OFFSET, 0]}>
+        <group position={[-1.5, NAV_LIST_Y_OFFSET, 0]}>
             {/* Background Panel */}
-            <RoundedBox args={[0.5, 4.6, 0.01]} radius={0.05} smoothness={4} position={[0, 0, -0.05]}>
+            <RoundedBox args={[0.5, panelHeight, 0.01]} radius={0.05} smoothness={4} position={[0, 0, -0.05]}>
                 <meshStandardMaterial color="#1f2937" transparent opacity={0.6} />
             </RoundedBox>
 
@@ -133,7 +137,7 @@ const NavButtonList = ({ items, activeView, onSelectView }: {
 
             {/* Navigation Items */}
             {items.map((item, index) => {
-                 const yPos = (NAV_ITEM_SPACING / 2) - (index * NAV_ITEM_SPACING);
+                 const yPos = yOffsetFromCenter - (index * NAV_ITEM_SPACING);
                  return (
                     <NavItem 
                         key={item.view}
