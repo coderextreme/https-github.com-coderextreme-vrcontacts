@@ -90,8 +90,13 @@ const Scene: React.FC<SceneProps> = (props) => {
     config: { mass: 1, tension: 220, friction: 25 }
   });
   
+  // Shift the entire nav assembly up to prevent the grid from blocking clicks on the lower button.
+  const NAV_Y_OFFSET = 2.4;
+  const MEETINGS_BUTTON_Y = 2.0 + NAV_Y_OFFSET;
+  const CONTACTS_BUTTON_Y = -2.0 + NAV_Y_OFFSET;
+
   const indicatorSpring = useSpring({
-    y: activeView === ViewType.MEETINGS ? 2.0 : -2.0,
+    y: activeView === ViewType.MEETINGS ? MEETINGS_BUTTON_Y : CONTACTS_BUTTON_Y,
     config: { mass: 1, tension: 220, friction: 25 },
   });
   
@@ -103,7 +108,7 @@ const Scene: React.FC<SceneProps> = (props) => {
       <OrbitControls makeDefault />
       
       {/* Navigation Panels */}
-       <RoundedBox args={[0.5, 4.6, 0.01]} radius={0.05} smoothness={4} position={[-8.5, 0, -0.05]}>
+       <RoundedBox args={[0.5, 4.6, 0.01]} radius={0.05} smoothness={4} position={[-8.5, NAV_Y_OFFSET, -0.05]}>
         <meshStandardMaterial color="#1f2937" transparent opacity={0.6} />
       </RoundedBox>
 
@@ -125,7 +130,7 @@ const Scene: React.FC<SceneProps> = (props) => {
         onClick={() => setActiveView(ViewType.MEETINGS)}
         isActive={activeView === ViewType.MEETINGS}
         color="cyan"
-        position={[-8.5, 2.0, 0]}
+        position={[-8.5, MEETINGS_BUTTON_Y, 0]}
         rotation={[0, 0, 0]}
       >
         <CalendarIcon className="h-12 w-12 mx-auto" />
@@ -135,7 +140,7 @@ const Scene: React.FC<SceneProps> = (props) => {
         onClick={() => setActiveView(ViewType.CONTACTS)}
         isActive={activeView === ViewType.CONTACTS}
         color="purple"
-        position={[-8.5, -2.0, 0]}
+        position={[-8.5, CONTACTS_BUTTON_Y, 0]}
         rotation={[0, 0, 0]}
       >
         <UserGroupIcon className="h-12 w-12 mx-auto" />
