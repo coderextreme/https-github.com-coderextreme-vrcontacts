@@ -104,7 +104,7 @@ const Scene: React.FC<SceneProps> = (props) => {
         onClick={() => setActiveView(ViewType.MEETINGS)}
         isActive={activeView === ViewType.MEETINGS}
         color="cyan"
-        position={[-1.8, 2, 0]}
+        position={[-1.35, 2.2, 0]}
         rotation={[0, 0, 0]}
       >
         <CalendarIcon className="h-12 w-12 mx-auto" />
@@ -114,7 +114,7 @@ const Scene: React.FC<SceneProps> = (props) => {
         onClick={() => setActiveView(ViewType.CONTACTS)}
         isActive={activeView === ViewType.CONTACTS}
         color="purple"
-        position={[-1.8, -2, 0]}
+        position={[-1.35, 1.7, 0]}
         rotation={[0, 0, 0]}
       >
         <UserGroupIcon className="h-12 w-12 mx-auto" />
