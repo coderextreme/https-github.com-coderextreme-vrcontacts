@@ -13,9 +13,9 @@ const App: React.FC = () => {
   const [contacts, setContacts] = useState<Contact[]>(CONTACTS);
   const [meetings, setMeetings] = useState<Meeting[]>(MEETINGS);
 
-  const [activeView, setActiveView] = useState<ViewType>(ViewType.MEETINGS);
-  const [selectedContactId, setSelectedContactId] = useState<string | null>(null);
-  const [selectedMeetingId, setSelectedMeetingId] = useState<string | null>(meetings[0]?.id || null);
+  const [activeView, setActiveView] = useState<ViewType>(ViewType.CONTACTS);
+  const [selectedContactId, setSelectedContactId] = useState<string | null>(contacts[0]?.id || null);
+  const [selectedMeetingId, setSelectedMeetingId] = useState<string | null>(null);
 
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const [isMeetingModalOpen, setIsMeetingModalOpen] = useState(false);
