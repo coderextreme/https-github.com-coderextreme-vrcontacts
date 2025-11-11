@@ -69,7 +69,7 @@ const NavButton = ({ onClick, isActive, children, color, position, rotation }: {
                 onClick={onClick}
             >
                 <planeGeometry args={[0.3, 0.4]} />
-                <meshStandardMaterial color={isActive ? color : '#27272a'} transparent opacity={0.5} />
+                <meshStandardMaterial color={isActive ? color : '#27272a'} transparent opacity={isActive ? 0.2 : 0.5} />
             </mesh>
             <Html center position={[0, 0, 0.01]} transform>
                 <div className={`p-4 rounded-lg w-[120px] h-[160px] flex flex-col items-center justify-center pointer-events-none transition-all duration-300 border-2 ${currentClasses}`}>
@@ -90,6 +90,12 @@ const Scene: React.FC<SceneProps> = (props) => {
     config: { mass: 1, tension: 220, friction: 25 }
   });
   
+  const indicatorSpring = useSpring({
+    y: activeView === ViewType.MEETINGS ? 2.0 : -2.0,
+    config: { mass: 1, tension: 220, friction: 25 },
+  });
+  
+  const indicatorColor = activeView === ViewType.MEETINGS ? '#67e8f9' : '#c084fc';
 
   return (
     <>
@@ -100,6 +106,21 @@ const Scene: React.FC<SceneProps> = (props) => {
        <RoundedBox args={[0.5, 4.6, 0.01]} radius={0.05} smoothness={4} position={[-8.5, 0, -0.05]}>
         <meshStandardMaterial color="#1f2937" transparent opacity={0.6} />
       </RoundedBox>
+
+      {/* Sliding indicator for NavButtons */}
+      <a.group position-x={-8.5} position-y={indicatorSpring.y} position-z={-0.04}>
+        <RoundedBox args={[0.35, 0.45, 0.02]} radius={0.05} smoothness={4}>
+            <meshStandardMaterial 
+                color={indicatorColor}
+                emissive={indicatorColor}
+                emissiveIntensity={1.5}
+                transparent 
+                opacity={0.6}
+                toneMapped={false}
+            />
+        </RoundedBox>
+      </a.group>
+
       <NavButton
         onClick={() => setActiveView(ViewType.MEETINGS)}
         isActive={activeView === ViewType.MEETINGS}
