@@ -213,7 +213,7 @@ const Scene: React.FC<SceneProps> = (props) => {
       </group>
 
       {/* Detail Panel */}
-      <a.group {...animatedDetailProps} position={[8.5, 1.6, 0]} rotation={[0, -0.5, 0]}>
+      <a.group {...animatedDetailProps} position={[16.5, 1.6, 0]} rotation={[0, -0.5, 0]}>
         <mesh>
              <planeGeometry args={[PANEL_WIDTH * 1.5, PANEL_HEIGHT]} />
              <meshStandardMaterial transparent opacity={0} />
