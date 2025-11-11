@@ -72,7 +72,11 @@ const NavItem = ({ item, isActive, onClick }: {
 
     return (
         <aWeb.div 
-            style={{ scale: spring.scale, width: 120, height: 160 }}
+            style={{ 
+                transform: spring.scale.to(s => `scale(${s})`),
+                width: 120, 
+                height: 160 
+            }}
             className="cursor-pointer"
             onMouseEnter={handlePointerOver}
             onMouseLeave={handlePointerOut}
