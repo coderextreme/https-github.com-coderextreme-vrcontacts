@@ -2,7 +2,7 @@
 /// <reference types="@react-three/fiber" />
 import React from 'react';
 import { useSpring, a } from '@react-spring/three';
-import { Html, OrbitControls } from '@react-three/drei';
+import { Html, OrbitControls, RoundedBox } from '@react-three/drei';
 
 import type { Contact, Meeting } from '../types';
 import { ViewType } from '../types';
@@ -97,11 +97,14 @@ const Scene: React.FC<SceneProps> = (props) => {
       <OrbitControls makeDefault />
       
       {/* Navigation Panels */}
+       <RoundedBox args={[0.5, 4.6, 0.01]} radius={0.05} smoothness={4} position={[-8.5, 0, -0.05]}>
+        <meshStandardMaterial color="#1f2937" transparent opacity={0.6} />
+      </RoundedBox>
       <NavButton
         onClick={() => setActiveView(ViewType.MEETINGS)}
         isActive={activeView === ViewType.MEETINGS}
         color="cyan"
-        position={[-8.0, 2.0, 0]}
+        position={[-8.5, 2.0, 0]}
         rotation={[0, 0, 0]}
       >
         <CalendarIcon className="h-12 w-12 mx-auto" />
@@ -111,7 +114,7 @@ const Scene: React.FC<SceneProps> = (props) => {
         onClick={() => setActiveView(ViewType.CONTACTS)}
         isActive={activeView === ViewType.CONTACTS}
         color="purple"
-        position={[-8.0, -2.0, 0]}
+        position={[-8.5, -2.0, 0]}
         rotation={[0, 0, 0]}
       >
         <UserGroupIcon className="h-12 w-12 mx-auto" />
