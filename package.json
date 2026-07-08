@@ -9,19 +9,22 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "react": "18.3.1",
-    "react-dom": "18.3.1",
     "@google/genai": "0.14.0",
+    "@react-spring/three": "^10.1.2",
+    "@react-spring/web": "10.0.3",
+    "@react-three/drei": "10.7.7",
+    "@react-three/fiber": "9.6.1",
+    "@types/react": "19.2.7",
+    "@types/react-dom": "19.2.3",
+    "gaxios": "7.1.5",
+    "react": "19.2.7",
+    "react-dom": "19.2.7",
     "three": "0.183.2",
-    "@react-three/fiber": "8.16.2",
-    "@react-three/drei": "9.122.0",
-    "@react-spring/three": "9.7.3",
-    "zustand": "4.5.2",
-    "@react-spring/web": "10.0.3"
+    "zustand": "5.0.1"
   },
   "overrides": {
     "tar": "7.5.19",
-    "axios": "1.14.0"
+    "axios": "1.18.1"
   },
   "devDependencies": {
     "@types/node": "22.14.0",
