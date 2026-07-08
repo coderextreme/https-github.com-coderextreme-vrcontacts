@@ -12,21 +12,24 @@
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "@google/genai": "0.14.0",
-    "three": "0.165.0",
-    "@react-three/fiber": "8.16.8",
-    "@react-three/drei": "9.107.0",
+    "three": "0.183.2",
+    "@react-three/fiber": "8.16.2",
+    "@react-three/drei": "9.122.0",
     "@react-spring/three": "9.7.3",
     "zustand": "4.5.2",
     "@react-spring/web": "10.0.3"
   },
   "overrides": {
-    "tar": "7.5.13",
+    "tar": "7.5.19",
     "axios": "1.14.0"
   },
   "devDependencies": {
     "@types/node": "22.14.0",
     "@vitejs/plugin-react": "5.2.0",
     "typescript": "5.8.2",
-    "vite": "7.3.1"
+    "vite": "7.3.6"
+  },
+  "allowScripts": {
+    "esbuild@0.28.1": true
   }
 }
